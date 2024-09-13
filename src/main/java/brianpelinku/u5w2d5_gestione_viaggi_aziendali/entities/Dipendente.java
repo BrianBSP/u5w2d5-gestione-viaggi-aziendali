@@ -18,5 +18,6 @@ public class Dipendente {
     private String username;
     private String nome;
     private String cognome;
-    private String emali;
+    private String email;
+    private String avatar;
 }
