@@ -13,6 +13,6 @@ public record NewPrenotazioneDTO(
         String noteAggiuntive,
 
         Dipendente dipendenteId,
-        Viaggio viaggio
+        Viaggio viaggioId
 ) {
 }

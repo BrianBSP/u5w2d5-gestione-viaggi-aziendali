@@ -8,9 +8,9 @@ import java.time.LocalDate;
 public record NewViaggioDTO(
         @NotEmpty(message = "La destinazione è obbligatoria")
         String destinazione,
-        @NotEmpty(message = "Il nome è obbligatorio")
+
         LocalDate dataPrenotazione,
-        @NotEmpty(message = "Inserire lo stato del viaggion. Campo obbligatorio.")
+        
         StatoViaggio statoViaggio
 ) {
 }

@@ -24,6 +24,7 @@ public class DipendenteService {
     @Autowired
     private DipendenteRepository dipendenteRepository;
 
+    @Autowired
     private Cloudinary cloudinary;
 
     // salvo nuovo dipendente nel DB --> post + body
