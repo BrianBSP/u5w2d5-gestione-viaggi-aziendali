@@ -67,9 +67,9 @@ public class DipendenteController {
     }
 
     @PostMapping("/{dipendenteId}/avatar")
-    public NewDipendenteRespDTO uploadImage(@RequestParam("avatar") MultipartFile img, @PathVariable int dipendenteId) {
+    public Dipendente uploadImage(@RequestParam("avatar") MultipartFile img, @PathVariable int dipendenteId) {
         try {
-            return new NewDipendenteRespDTO(this.dipendenteService.uploadImagine(img, dipendenteId).dipendenteId());
+            return this.dipendenteService.uploadImagine(img, dipendenteId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -75,14 +75,13 @@ public class DipendenteService {
     }
 
     // upload immagine
-    public NewDipendenteRespDTO uploadImagine(MultipartFile file, int dipendenteId) throws IOException {
+    public Dipendente uploadImagine(MultipartFile file, int dipendenteId) throws IOException {
         Dipendente trovato = this.findById(dipendenteId);
-        if (trovato == null) throw new NotFoundException(dipendenteId);
         String url = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-        if (url == null) throw new IOException();
+
         trovato.setAvatar(url);
-        Dipendente salvato = dipendenteRepository.save(trovato);
-        return new NewDipendenteRespDTO(salvato.getId());
+
+        return dipendenteRepository.save(trovato);
     }
 
 }
