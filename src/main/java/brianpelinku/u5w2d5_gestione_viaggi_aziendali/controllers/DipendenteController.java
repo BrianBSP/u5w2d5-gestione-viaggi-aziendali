@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,9 +46,33 @@ public class DipendenteController {
                                              @RequestParam(defaultValue = "id") String sortBy) {
         return this.dipendenteService.findAll(page, size, sortBy);
     }
+
     // GET byId
+    @GetMapping("/{dipendenteId}")
+    public NewDipendenteRespDTO findDipendenteById(@PathVariable int dipendenteId) {
+        return new NewDipendenteRespDTO(this.dipendenteService.findById(dipendenteId).getId());
+    }
 
     // PUT   +body
+    @PutMapping("/{dipendenteId}")
+    public NewDipendenteRespDTO findByIdAndUpdate(@PathVariable int dipendenteId, @RequestBody NewDipendenteDTO newDipendente) {
+        return new NewDipendenteRespDTO(this.dipendenteService.findByIdAndUpdate(dipendenteId, newDipendente).dipendenteId());
+    }
 
     // DELETE
+    @DeleteMapping("/{dipendenteId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable int dipendenteId) {
+        dipendenteService.findByIdAndDelete(dipendenteId);
+    }
+
+    @PostMapping("/{dipendenteId}/avatar")
+    public NewDipendenteRespDTO uploadImage(@RequestParam("avatar") MultipartFile img, @PathVariable int dipendenteId) {
+        try {
+            return new NewDipendenteRespDTO(this.dipendenteService.uploadImagine(img, dipendenteId).dipendenteId());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

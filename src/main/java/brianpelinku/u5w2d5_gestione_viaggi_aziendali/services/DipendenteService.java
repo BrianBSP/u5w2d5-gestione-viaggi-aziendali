@@ -2,15 +2,21 @@ package brianpelinku.u5w2d5_gestione_viaggi_aziendali.services;
 
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Dipendente;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.exceptions.BadRequestException;
+import brianpelinku.u5w2d5_gestione_viaggi_aziendali.exceptions.NotFoundException;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads.NewDipendenteDTO;
+import brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads.NewDipendenteRespDTO;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.repositories.DipendenteRepository;
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class DipendenteService {
@@ -38,6 +44,45 @@ public class DipendenteService {
         if (page > 20) page = 20;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.dipendenteRepository.findAll(pageable);
+    }
+
+    // cerco dipendente byId
+    public Dipendente findById(int dipendenteId) {
+        return this.dipendenteRepository.findById(dipendenteId).orElseThrow(() -> new NotFoundException(dipendenteId));
+    }
+
+    // update dipendente
+    public NewDipendenteRespDTO findByIdAndUpdate(int dipendenteId, NewDipendenteDTO newDipendente) {
+
+        // rifaccio controllo sulla email se è già salvata nel db
+        this.dipendenteRepository.findByEmail(newDipendente.email()).ifPresent(author -> {
+            throw new BadRequestException("L'email " + newDipendente.email() + " è già in uso.");
+        });
+        Dipendente trovato = this.findById(dipendenteId);
+        trovato.setUsername(newDipendente.username());
+        trovato.setNome(newDipendente.nome());
+        trovato.setCognome(newDipendente.cognome());
+        trovato.setEmail(newDipendente.email());
+        trovato.setAvatar("https://ui-avatars.com/api/?name=" + newDipendente.nome() + "+" + newDipendente.cognome());
+
+        return new NewDipendenteRespDTO(this.dipendenteRepository.save(trovato).getId());
+    }
+
+    // delete dipendente
+    public void findByIdAndDelete(int dipendenteId) {
+        Dipendente trovato = this.findById(dipendenteId);
+        this.dipendenteRepository.delete(trovato);
+    }
+
+    // upload immagine
+    public NewDipendenteRespDTO uploadImagine(MultipartFile file, int dipendenteId) throws IOException {
+        Dipendente trovato = this.findById(dipendenteId);
+        if (trovato == null) throw new NotFoundException(dipendenteId);
+        String url = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+        if (url == null) throw new IOException();
+        trovato.setAvatar(url);
+        Dipendente salvato = dipendenteRepository.save(trovato);
+        return new NewDipendenteRespDTO(salvato.getId());
     }
 
 }
