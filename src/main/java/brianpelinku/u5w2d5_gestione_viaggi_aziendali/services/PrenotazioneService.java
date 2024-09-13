@@ -31,11 +31,13 @@ public class PrenotazioneService {
         Dipendente dipendente = dipendenteService.findById(body.dipendenteId().getId());
         Viaggio viaggio = viaggioService.findById(body.viaggioId().getId());
 
+        if (dipendente == null && viaggio == null) throw new RuntimeException();
+
         Prenotazione prenotazione = new Prenotazione();
         prenotazione.setDataDiRichiesta(body.dataDiRichiesta());
         prenotazione.setNoteAggiuntive(body.noteAggiuntive());
-        prenotazione.setViaggio(body.viaggioId());
-        prenotazione.setDipendente(body.dipendenteId());
+        prenotazione.setViaggio(viaggio);
+        prenotazione.setDipendente(dipendente);
 
 
         // salvo il nuovo record

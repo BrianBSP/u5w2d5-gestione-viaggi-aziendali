@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
 public record NewPrenotazioneDTO(
-        @NotEmpty(message = "La data di richiesta della prenotazione è obbligatoria.")
+        //@NotEmpty(message = "La data di richiesta della prenotazione è obbligatoria.")
         LocalDate dataDiRichiesta,
         @NotEmpty(message = "Inserire delle note. Campo aggiuntivo.")
         String noteAggiuntive,
