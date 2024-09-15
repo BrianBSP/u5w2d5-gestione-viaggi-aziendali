@@ -1,18 +1,19 @@
 package brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads;
 
-import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Dipendente;
-import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Viaggio;
 import jakarta.validation.constraints.NotEmpty;
-
-import java.time.LocalDate;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record NewPrenotazioneDTO(
-        //@NotEmpty(message = "La data di richiesta della prenotazione è obbligatoria.")
-        LocalDate dataDiRichiesta,
+        @NotEmpty(message = "La data di richiesta della prenotazione è obbligatoria.")
+        @Size(min = 10, max = 10)
+        String dataDiRichiesta,
         @NotEmpty(message = "Inserire delle note. Campo aggiuntivo.")
+        @Size(min = 1, max = 300)
         String noteAggiuntive,
-
-        Dipendente dipendenteId,
-        Viaggio viaggioId
+        @NotNull(message = "Campo obbligatorio. Indicare id dipendente.")
+        int dipendenteId,
+        @NotNull(message = "Campo obbligatorio. Indicare id viaggio.")
+        int viaggioId
 ) {
 }

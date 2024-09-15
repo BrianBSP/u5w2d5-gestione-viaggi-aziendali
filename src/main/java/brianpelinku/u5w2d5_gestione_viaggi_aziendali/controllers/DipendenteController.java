@@ -66,6 +66,7 @@ public class DipendenteController {
         dipendenteService.findByIdAndDelete(dipendenteId);
     }
 
+    // UPLOAD IMMAGINE
     @PostMapping("/{dipendenteId}/avatar")
     public Dipendente uploadImage(@RequestParam("avatar") MultipartFile img, @PathVariable int dipendenteId) throws IOException {
         try {

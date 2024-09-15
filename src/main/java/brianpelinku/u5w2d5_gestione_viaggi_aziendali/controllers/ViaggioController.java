@@ -52,12 +52,6 @@ public class ViaggioController {
         return new NewDipendenteRespDTO(this.viaggioService.findById(viaggiId).getId());
     }
 
-    // PUT   +body
-    /*@PutMapping("/{viaggiId}")
-    public NewDipendenteRespDTO findByIdAndUpdate(@PathVariable int viaggiId, @RequestBody NewDipendenteDTO newDipendente) {
-        return new NewDipendenteRespDTO(this.viaggioService.findByIdAndUpdate(viaggiId, newDipendente).viaggiId());
-    }*/
-
     // DELETE
     @DeleteMapping("/{viaggiId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

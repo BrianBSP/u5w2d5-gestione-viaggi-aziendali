@@ -51,12 +51,6 @@ public class PrenotazioneController {
         return new NewPrenotazioneRespDTO(this.prenotazioneService.findById(prenotazioneID).getId());
     }
 
-    // PUT   +body    ---> manca il metodo nel service
-    /*@PutMapping("/{prenotazioneID}")
-    public NewPrenotazioneRespDTO findByIdAndUpdate(@PathVariable int prenotazioneID, @RequestBody NewDipendenteDTO newDipendente) {
-        return new NewDipendenteRespDTO(this.prenotazioneService.findByIdAndUpdate(prenotazioneID, newDipendente).prenotazioneID());
-    }*/
-
     // DELETE
     @DeleteMapping("/{prenotazioneID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

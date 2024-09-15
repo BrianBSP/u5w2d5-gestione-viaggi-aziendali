@@ -1,6 +1,7 @@
 package brianpelinku.u5w2d5_gestione_viaggi_aziendali.services;
 
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Viaggio;
+import brianpelinku.u5w2d5_gestione_viaggi_aziendali.enums.StatoViaggio;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.exceptions.NotFoundException;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads.NewDipendenteRespDTO;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads.NewViaggioDTO;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class ViaggioService {
@@ -23,14 +26,15 @@ public class ViaggioService {
 
         Viaggio newViaggio = new Viaggio();
         newViaggio.setDestinazione(body.destinazione());
-        newViaggio.setDataPrenotazione(body.dataPrenotazione());
-        newViaggio.setStatoViaggio(body.statoViaggio());
+        newViaggio.setDataPrenotazione(LocalDate.parse(body.dataPrenotazione()));
+        newViaggio.setStatoViaggio(StatoViaggio.valueOf(body.statoViaggio()));
 
 
         // salvo il nuovo record
         return new NewDipendenteRespDTO(this.viaggioRepository.save(newViaggio).getId());
     }
 
+    // find All
     public Page<Viaggio> findAll(int page, int size, String sortBy) {
         if (page > 20) page = 20;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));

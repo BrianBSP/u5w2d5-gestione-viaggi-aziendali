@@ -3,6 +3,7 @@ package brianpelinku.u5w2d5_gestione_viaggi_aziendali.services;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Dipendente;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Prenotazione;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.entities.Viaggio;
+import brianpelinku.u5w2d5_gestione_viaggi_aziendali.exceptions.BadRequestException;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.exceptions.NotFoundException;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads.NewPrenotazioneDTO;
 import brianpelinku.u5w2d5_gestione_viaggi_aziendali.payloads.NewPrenotazioneRespDTO;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class PrenotazioneService {
@@ -28,13 +31,17 @@ public class PrenotazioneService {
     // salvo nuovo viaggio nel DB --> post + body
     public NewPrenotazioneRespDTO savePrenotazione(NewPrenotazioneDTO body) {
 
-        Dipendente dipendente = dipendenteService.findById(body.dipendenteId().getId());
-        Viaggio viaggio = viaggioService.findById(body.viaggioId().getId());
+        Dipendente dipendente = dipendenteService.findById(body.dipendenteId());
+        Viaggio viaggio = viaggioService.findById(body.viaggioId());
 
-        if (dipendente == null && viaggio == null) throw new RuntimeException();
+        prenotazioneRepository.findByDipendenteAndViaggioDataPrenotazione(dipendente, viaggio.getDataPrenotazione()).ifPresent(
+                prenotazione -> {
+                    throw new BadRequestException("Il dipendente con id " + dipendente.getId() + " ha già in programma un viaggio nella data richiesta.");
+                }
+        );
 
         Prenotazione prenotazione = new Prenotazione();
-        prenotazione.setDataDiRichiesta(body.dataDiRichiesta());
+        prenotazione.setDataDiRichiesta(LocalDate.parse(body.dataDiRichiesta()));
         prenotazione.setNoteAggiuntive(body.noteAggiuntive());
         prenotazione.setViaggio(viaggio);
         prenotazione.setDipendente(dipendente);
